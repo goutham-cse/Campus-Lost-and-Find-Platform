@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Connections - Campus Lost & Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between">
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900">Automated Match Connections</h1>
+                <p class="text-sm text-gray-600 mt-1">Real-time matching results between lost object reports and found items.</p>
+            </div>
+            <a href="/dashboard" class="text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-2 rounded-lg font-medium border border-gray-300">
+                &larr; Back to Dashboard
+            </a>
+        </div>
+
+        <div th:if="${matches.isEmpty()}" class="bg-white rounded-2xl p-12 text-center border border-gray-200 shadow-sm">
+            <div class="text-4xl mb-3">🔎</div>
+            <h3 class="text-lg font-bold text-gray-800">No active matches found at this moment</h3>
+            <p class="text-sm text-gray-500 mt-1 max-w-md mx-auto">When someone reports an item matching your lost or found parameters, it will automatically appear here.</p>
+        </div>
+
+        <div th:if="${!matches.isEmpty()}" class="space-y-6">
+
+            <div th:each="match : ${matches}" class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+                
+                <!-- Match Header Bar -->
+                <div class="bg-gradient-to-r from-slate-900 to-indigo-900 text-white p-4 px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <span class="badge-match px-3 py-1 rounded-full text-xs font-extrabold" th:text="${match.matchPercentage + '% Confidence Match'}">95% Match</span>
+                        <span class="text-sm font-semibold text-gray-200" th:text="${'Category: ' + match.foundItem.category.displayName}">Category</span>
+                    </div>
+                    <span class="text-xs text-gray-300 mt-2 sm:mt-0">Matched automatically via AI & Attribute Questionnaire</span>
+                </div>
+
+                <!-- Comparison Grid -->
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Lost Item Side -->
+                    <div class="border-r-0 md:border-r border-gray-200 pr-0 md:pr-6">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded">LOST REPORT</span>
+                            <span class="text-xs text-gray-500" th:text="${'Reported by: ' + match.lostItem.user.fullName}">Owner</span>
+                        </div>
+
+                        <h3 class="text-lg font-bold text-gray-900" th:text="${match.lostItem.title}">Lost Item Title</h3>
+                        <p class="text-xs text-gray-600 mt-1" th:text="${match.lostItem.description}">Description</p>
+                        
+                        <div class="mt-3 text-xs text-gray-500 space-y-1">
+                            <p><strong>Lost Location:</strong> <span th:text="${match.lostItem.location}">Location</span></p>
+                            <p><strong>Lost Date:</strong> <span th:text="${match.lostItem.dateOccurred}">Date</span></p>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-amber-50 rounded-xl border border-amber-200">
+                            <h4 class="text-xs font-bold text-amber-900 uppercase">Contact Owner Details:</h4>
+                            <div class="mt-2 text-xs text-amber-800 space-y-1">
+                                <p>📧 Email: <a th:href="${'mailto:' + match.lostItem.user.email}" class="underline font-semibold" th:text="${match.lostItem.user.email}">email</a></p>
+                                <p>📞 Phone: <span class="font-semibold" th:text="${match.lostItem.user.phone}">phone</span></p>
+                                <p>🆔 Roll / ID: <span class="font-semibold" th:text="${match.lostItem.user.rollNumber}">roll</span> (<span th:text="${match.lostItem.user.department}">dept</span>)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Found Item Side -->
+                    <div>
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded">FOUND OBJECT (AI PROCESSED)</span>
+                            <span class="text-xs text-gray-500" th:text="${'Found by: ' + match.foundItem.user.fullName}">Finder</span>
+                        </div>
+
+                        <div th:if="${match.foundItem.imagePath != null}" class="mb-3">
+                            <img th:src="${match.foundItem.imagePath}" alt="Found item" class="h-36 rounded-xl object-cover border border-gray-200 shadow-sm">
+                        </div>
+
+                        <h3 class="text-lg font-bold text-gray-900" th:text="${match.foundItem.title}">Found Item Title</h3>
+                        <p class="text-xs text-gray-600 mt-1" th:text="${match.foundItem.description}">Description</p>
+
+                        <div class="mt-3 text-xs text-gray-500 space-y-1">
+                            <p><strong>Found Location:</strong> <span th:text="${match.foundItem.location}">Location</span></p>
+                            <p><strong>Found Date:</strong> <span th:text="${match.foundItem.dateOccurred}">Date</span></p>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                            <h4 class="text-xs font-bold text-emerald-900 uppercase">Contact Finder Details:</h4>
+                            <div class="mt-2 text-xs text-emerald-800 space-y-1">
+                                <p>📧 Email: <a th:href="${'mailto:' + match.foundItem.user.email}" class="underline font-semibold" th:text="${match.foundItem.user.email}">email</a></p>
+                                <p>📞 Phone: <span class="font-semibold" th:text="${match.foundItem.user.phone}">phone</span></p>
+                                <p>🆔 Roll / ID: <span class="font-semibold" th:text="${match.foundItem.user.rollNumber}">roll</span> (<span th:text="${match.foundItem.user.department}">dept</span>)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Match Confirmation Footer -->
+                <div class="bg-gray-50 p-4 px-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between">
+                    <div class="text-xs text-gray-600 mb-2 sm:mb-0">
+                        <strong>Match Reasons:</strong>
+                        <span th:text="${#strings.arrayJoin(match.matchingReasons.toArray(), ' | ')}">Reasons</span>
+                    </div>
+
+                    <form th:action="@{/matches/connect}" method="post">
+                        <input type="hidden" name="lostItemId" th:value="${match.lostItem.id}">
+                        <input type="hidden" name="foundItemId" th:value="${match.foundItem.id}">
+                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg shadow transition text-xs">
+                            Confirm Connection &amp; Mark Handed Over
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500">
+        Campus Lost & Found Platform &copy; 2026. Java Spring Boot Application.
+    </footer>
+</body>
+</html>

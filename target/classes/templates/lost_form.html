@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Lost Item - Campus Lost & Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script th:src="@{/js/main.js}" defer></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between">
+
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main class="max-w-3xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <div class="glass-card rounded-2xl p-6 sm:p-8 shadow-xl">
+            
+            <div class="border-b border-gray-200 pb-4 mb-6 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2.5 py-1 rounded-md">Lost Module</span>
+                    <h1 class="text-2xl font-extrabold text-gray-900 mt-1">Search / Report Lost Object</h1>
+                    <p class="text-xs text-gray-500">Fill in the category-specific questions to match automatically with found objects.</p>
+                </div>
+                <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center font-bold text-2xl">
+                    ❓
+                </div>
+            </div>
+
+            <form th:action="@{/lost/new}" method="post" enctype="multipart/form-data" class="space-y-6">
+
+                <!-- Basic Item Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Item Title *</label>
+                        <input type="text" id="title" name="title" required placeholder="e.g. My ID Card / Blue Backpack"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Select Item Category *</label>
+                        <select id="categorySelect" name="category" required
+                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
+                            <option th:each="cat : ${categories}" 
+                                    th:value="${cat.name()}" 
+                                    th:text="${cat.displayName}">Category</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Estimated Campus Location Lost *</label>
+                        <input type="text" name="location" required placeholder="e.g. Near Mechanical Block / Auditorium"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Date / Time Lost *</label>
+                        <input type="text" name="dateOccurred" required placeholder="e.g. Yesterday morning around 10 AM"
+                               class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">General Description</label>
+                    <textarea id="description" name="description" rows="2" placeholder="Any specific details, stickers, or circumstances..."
+                              class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"></textarea>
+                </div>
+
+                <!-- Reference Image Upload (Optional for Lost) -->
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Upload Reference Image (Optional)</label>
+                    <input type="file" name="imageFile" accept="image/*"
+                           class="w-full text-xs border border-gray-300 rounded-lg p-2 bg-gray-50">
+                </div>
+
+                <!-- Dynamic Questions Container (Identical Question Set to Found Module) -->
+                <div id="questionsContainer" class="bg-amber-50/50 p-4 rounded-xl border border-amber-200">
+                    <!-- Dynamic fields populated automatically based on category -->
+                </div>
+
+                <div class="pt-4 border-t border-gray-200 flex justify-end space-x-3">
+                    <a href="/dashboard" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg">Cancel</a>
+                    <button type="submit" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition text-sm">
+                        Scan &amp; Submit Lost Report
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 py-4 text-center text-xs text-gray-500">
+        Campus Lost & Found Platform &copy; 2026. Java Spring Boot Application.
+    </footer>
+</body>
+</html>

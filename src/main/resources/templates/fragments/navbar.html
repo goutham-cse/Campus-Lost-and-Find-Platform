@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+    <nav th:fragment="navbar" class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Logo & Brand -->
+                <div class="flex items-center">
+                    <a href="/dashboard" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                            🔍
+                        </div>
+                        <span class="text-xl font-bold text-gray-900 tracking-tight">Campus<span class="text-blue-600">Lost&Found</span></span>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="flex items-center space-x-4" sec:authorize="isAuthenticated()">
+                    <a href="/dashboard" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg font-medium text-sm transition">Dashboard</a>
+                    <a href="/lost/new" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-medium text-sm shadow-sm transition flex items-center space-x-1">
+                        <span>❓ Lost Something</span>
+                    </a>
+                    <a href="/found/new" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium text-sm shadow-sm transition flex items-center space-x-1">
+                        <span>✨ Found Something</span>
+                    </a>
+                    <a href="/matches" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm px-3 py-2">Matches</a>
+
+                    <div class="border-l border-gray-300 h-6 mx-2"></div>
+
+                    <form th:action="@{/logout}" method="post" class="inline">
+                        <button type="submit" class="text-xs font-semibold text-gray-500 hover:text-red-600 px-2 py-1 border border-gray-300 rounded hover:border-red-500 transition">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+
+                <div class="flex items-center space-x-3" sec:authorize="!isAuthenticated()">
+                    <a href="/login" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg font-medium text-sm">Login</a>
+                    <a href="/register" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm shadow-sm">Register</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>
